@@ -25,7 +25,22 @@ defmodule HexDocsSearch.Hex.Package do
   @doc false
   def changeset(package, attrs) do
     package
-    |> cast(attrs, [:name, :docs_html_url, :downloads_all, :downloads_day, :downloads_recent, :downloads_week, :latest_docs_url, :html_url, :latest_stable_version, :meta, :search_items_json, :sidebar_items_json, :last_pulled, :docs_config_json])
+    |> cast(attrs, [
+      :name,
+      :docs_html_url,
+      :downloads_all,
+      :downloads_day,
+      :downloads_recent,
+      :downloads_week,
+      :latest_docs_url,
+      :html_url,
+      :latest_stable_version,
+      :meta,
+      :search_items_json,
+      :sidebar_items_json,
+      :last_pulled,
+      :docs_config_json
+    ])
     |> validate_required([:name, :docs_html_url, :html_url, :meta])
   end
 end

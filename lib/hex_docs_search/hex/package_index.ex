@@ -7,8 +7,24 @@ defmodule HexDocsSearch.Hex.PackageIndex do
     field :doc, :string
     field :title, :string
     field :ref, :string
-    field :type, Ecto.Enum, values: [:function, :module, :type, :protocol, :behaviour, :callback, :opaque, :exception, :macrocallback, :macro, :extras, :task]
-    field :rank, :float 
+
+    field :type, Ecto.Enum,
+      values: [
+        :function,
+        :module,
+        :type,
+        :protocol,
+        :behaviour,
+        :callback,
+        :opaque,
+        :exception,
+        :macrocallback,
+        :macro,
+        :extras,
+        :task
+      ]
+
+    field :rank, :float
     belongs_to :package, HexDocsSearch.Hex.Package, foreign_key: :package_id
   end
 

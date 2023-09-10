@@ -18,13 +18,18 @@
   <:item title="Latest docs url"><%= @package.latest_docs_url %></:item>
   <:item title="Html url"><%= @package.html_url %></:item>
   <:item title="Latest stable version"><%= @package.latest_stable_version %></:item>
-  <:item title="Meta"><code><%= raw inspect(@package.meta, pretty: true) %></code></:item>
+  <:item title="Meta"><code><%= raw(inspect(@package.meta, pretty: true)) %></code></:item>
   <:item title="Last pulled"><%= @package.last_pulled %></:item>
 </.list>
 
 <.back navigate={~p"/packages"}>Back to packages</.back>
 
-<.modal :if={@live_action == :edit} id="package-modal" show on_cancel={JS.patch(~p"/packages/#{@package}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="package-modal"
+  show
+  on_cancel={JS.patch(~p"/packages/#{@package}")}
+>
   <.live_component
     module={HexDocsSearchWeb.PackageLive.FormComponent}
     id={@package.id}

@@ -26,31 +26,37 @@ defmodule HexDocsSearch.Hex do
     |> Repo.all()
   end
 
-
   def search_packages(term, limit \\ 25) do
-    term = 
+    term =
       term
       |> String.trim()
       |> String.trim_trailing(".")
 
-    term_quoted = "\"#{term}\"" 
-      |> String.replace(" " , "+")
+    term_quoted =
+      "\"#{term}\""
+      |> String.replace(" ", "+")
 
+    unioned =
+      from(i in PackageIndex,
+        select: %{
+          i
+          | function_rank: fragment("bm25(packages_index, 10.0, 5.0, 1.0)"),
+            module_rank: fragment("bm25(packages_index, 5.0, 10.0, 1.0)")
+        },
+        where: fragment("packages_index MATCH ?", ^term_quoted)
+      )
 
-    unioned = from(i in PackageIndex, 
-      select: %{ i | 
-        function_rank: fragment("bm25(packages_index, 10.0, 5.0, 1.0)"),
-        module_rank: fragment("bm25(packages_index, 5.0, 10.0, 1.0)"),
-      },
-      where: fragment("packages_index MATCH ?", ^term_quoted)
-    )
+    preload_query =
+      from(p in Package, select: [:id, :name, :latest_stable_version, :docs_html_url])
 
-    preload_query = from(p in Package, select: [:id, :name, :latest_stable_version, :docs_html_url])
-
-    q = from(i in subquery(unioned), 
-      join: p in assoc(i, :package),
-      select: %{ i |
-        rank: fragment("
+    q =
+      from(i in subquery(unioned),
+        join: p in assoc(i, :package),
+        select: %{
+          i
+          | rank:
+              fragment(
+                "
                         CASE
                           WHEN (lower(?) = lower(?) and lower(?) = lower(?)) THEN -5000.0
                           WHEN ? = ? and (lower(?) = lower(?) or lower(?) = lower(?)) THEN -2000.0
@@ -60,41 +66,53 @@ defmodule HexDocsSearch.Hex do
                           WHEN instr(lower(?), lower(?)) = 1 THEN -20.0 
                           ELSE 0.0
                         END + ?  + ? + ?",
-          p.name, ^term, 
-          i.title, ^term, 
+                p.name,
+                ^term,
+                i.title,
+                ^term,
+                i.type,
+                "module",
+                p.name,
+                ^term,
+                i.title,
+                ^term,
+                i.type,
+                "module",
+                p.name,
+                ^term,
+                i.title,
+                ^term,
+                i.title,
+                ^term,
+                i.type,
+                i.title,
+                ^term,
+                i.title,
+                ^term,
+                p.name,
+                ^term,
+                i.title,
+                ^term,
+                "function_rank",
+                "module_rank",
+                i.rank
+              )
+        }
+      )
 
-          i.type, "module",
-          p.name, ^term, 
-          i.title, ^term, 
-
-          i.type, "module",
-          p.name, ^term, 
-          i.title, ^term, 
-          i.title, ^term, 
-
-          i.type,
-          i.title, ^term,
-          i.title, ^term,
-
-          p.name, ^term,
-          i.title, ^term,
-          "function_rank", "module_rank", i.rank
-        )
-      }
-    )
-
-    q2 = from(i in subquery(q), 
-      select: %PackageIndex{
+    q2 =
+      from(i in subquery(q),
+        select: %PackageIndex{
           id: i.id,
           title: i.title,
           type: i.type,
           package_id: i.package_id,
           ref: i.ref,
           rank: i.rank
-      },
-      order_by: [asc: i.rank],
-      limit: ^limit
-    )
+        },
+        order_by: [asc: i.rank],
+        limit: ^limit
+      )
 
     q2
     |> Repo.all()
@@ -156,7 +174,7 @@ defmodule HexDocsSearch.Hex do
 
   """
   def create_package(attrs \\ %{}) do
-    with {:ok, package } <- Repo.insert(Package.changeset(%Package{}, attrs)) do
+    with {:ok, package} <- Repo.insert(Package.changeset(%Package{}, attrs)) do
       create_package_index(package)
 
       {:ok, package}
