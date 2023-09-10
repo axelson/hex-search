@@ -1,5 +1,5 @@
 defmodule HexDocsSearchWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :hex_docs_search
+  use Desktop.Endpoint, otp_app: :hex_docs_search
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.

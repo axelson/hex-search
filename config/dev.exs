@@ -16,7 +16,8 @@ config :hex_docs_search, HexDocsSearch.Repo,
 config :hex_docs_search, HexDocsSearchWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  http: [ip: {127, 0, 0, 1}, port: 0],
+  server: true,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,

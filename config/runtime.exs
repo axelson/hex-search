@@ -45,7 +45,7 @@ if config_env() == :prod do
       """
 
   host = System.get_env("PHX_HOST") || "example.com"
-  port = String.to_integer(System.get_env("PORT") || "4000")
+  port = 0
 
   config :hex_docs_search, HexDocsSearchWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
@@ -57,6 +57,7 @@ if config_env() == :prod do
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
       port: port
     ],
+    server: true,
     secret_key_base: secret_key_base
 
   # ## SSL Support
@@ -92,4 +93,4 @@ if config_env() == :prod do
   # Check `Plug.SSL` for all available options in `force_ssl`.
 end
 
-config :hex_docs_search, :api_key, System.get_env("HEX_API_KEY") 
+config :hex_docs_search, :api_key, System.get_env("HEX_API_KEY")

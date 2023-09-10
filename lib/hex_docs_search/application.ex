@@ -15,9 +15,13 @@ defmodule HexDocsSearch.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: HexDocsSearch.PubSub},
       # Start the Endpoint (http/https)
-      HexDocsSearchWeb.Endpoint
-      # Start a worker by calling: HexDocsSearch.Worker.start_link(arg)
-      # {HexDocsSearch.Worker, arg}
+      HexDocsSearchWeb.Endpoint,
+      {Desktop.Window,
+       [
+         app: :hex_docs_search,
+         id: HexDocsSearchWindow,
+         url: &HexDocsSearchWeb.Endpoint.url/0
+       ]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

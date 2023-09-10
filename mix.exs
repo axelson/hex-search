@@ -32,6 +32,7 @@ defmodule HexDocsSearch.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:desktop, "~> 1.5"},
       {:phoenix, "~> 1.7.6"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.10"},
