@@ -21,7 +21,8 @@ defmodule HexDocsSearch.Application do
          app: :hex_docs_search,
          id: HexDocsSearchWindow,
          url: &HexDocsSearchWeb.Endpoint.url/0
-       ]}
+       ]},
+      HexDocsSearch.OpenBrowser
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
